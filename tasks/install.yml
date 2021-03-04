@@ -1,0 +1,61 @@
+---
+- name: Create the enduro group
+  group:
+    name: "{{ enduro_system_group }}"
+    state: present
+    system: true
+
+- name: Create the enduro user
+  user:
+    name: "{{ enduro_system_user }}"
+    groups: "{{ enduro_system_group }}"
+    append: true
+    shell: /usr/sbin/nologin
+    system: true
+    createhome: true
+    home: /var/lib/enduro
+
+- block:
+    - name: Download enduro binary to local folder
+      become: false
+      get_url:
+        url: "https://github.com/artefactual-labs/enduro/releases/download/v{{ enduro_version }}/enduro_{{ enduro_version }}_Linux-64bit.tar.gz"
+        dest: "/tmp/enduro_{{ enduro_version }}_Linux-64bit.tar.gz"
+        checksum: "sha256:{{ enduro_checksum }}"
+        mode: '0644'
+      register: _download_binary
+      until: _download_binary is succeeded
+      retries: 5
+      delay: 2
+      delegate_to: localhost
+      check_mode: false
+
+    - name: Unpack enduro binary
+      become: false
+      unarchive:
+        src: "/tmp/enduro_{{ enduro_version }}_Linux-64bit.tar.gz"
+        dest: "/tmp"
+        creates: "/tmp/enduro_{{ enduro_version }}_Linux-64bit/enduro"
+      delegate_to: localhost
+      check_mode: false
+
+    - name: Propagate enduro binaries
+      copy:
+        src: "/tmp/enduro_{{ enduro_version }}_Linux-64bit/enduro"
+        dest: "{{ enduro_binary_install_dir }}/enduro"
+        mode: 0755
+        owner: root
+        group: root
+      notify: restart enduro
+      when: not ansible_check_mode
+  when: enduro_binary_local_dir | length == 0
+
+- name: propagate locally distributed enduro binary
+  copy:
+    src: "{{ enduro_binary_local_dir }}/enduro"
+    dest: "{{ enduro_binary_install_dir }}/enduro"
+    mode: 0755
+    owner: root
+    group: root
+  when: enduro_binary_local_dir | length > 0
+  notify: restart enduro

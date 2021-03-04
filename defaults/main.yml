@@ -1,0 +1,36 @@
+---
+enduro_version: "latest"
+enduro_binary_local_dir: ""
+enduro_listen_address: "127.0.0.1:9001"
+enduro_listen_api_address: "127.0.0.1:9000"
+enduro_binary_install_dir: "/usr/local/bin"
+enduro_system_user: "enduro"
+enduro_system_group: "enduro"
+
+# Enduro database
+enduro_db_user: "enduro"
+enduro_db_pass: "enduro%123"
+enduro_db_host: "localhost"
+enduro_db_name: "enduro"
+
+
+# Cadence-web
+cadence_web_path: "/usr/share/cadence-web"
+cadence_web_version: "3.4.1"
+
+# Internal variables
+cadence_system_user: "cadence"
+cadence_system_group: "cadence"
+
+# Cadence database
+cadence_db_user: "cadence"
+cadence_db_pass: "cadence123P$"
+cadence_db_host: "localhost"
+cadence_db_name: "cadence"
+
+# Visibility database
+cadence_visibility_db_user: "visibility"
+cadence_visibility_db_pass: "visibility123P$"
+cadence_visibility_db_host: "localhost"
+cadence_visibility_db_name: "visibility"
+

@@ -1,0 +1,13 @@
+[Unit]
+Description=Cadence
+After=mysqld.service
+
+[Service]
+Type=simple
+Restart=on-failure
+User={{ cadence_system_user }}
+ExecStart=/usr/bin/cadence-server --root=/etc/cadence --env=archivematica start --services=frontend,matching,history,worker
+
+[Install]
+WantedBy=enduro.service
+

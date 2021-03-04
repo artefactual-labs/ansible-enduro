@@ -1,0 +1,43 @@
+- name: "Add cadence repository"
+  apt_repository:
+    repo: "deb [trusted=yes] https://jenkins-ci.archivematica.org/repos/am-packbuild/cadence/bionic/ ./"
+    state: present
+
+- name: Create the cadence group
+  group:
+    name: "{{ cadence_system_group }}"
+    state: present
+    system: true
+
+- name: Create the cadence user
+  user:
+    name: "{{ cadence_system_user }}"
+    groups: "{{ cadence_system_group }}"
+    append: true
+    shell: /usr/sbin/nologin
+    system: true
+    createhome: true
+    home: /var/lib/cadence
+
+- name: "Install cadence"
+  package:
+    name:
+      - cadence
+
+- name: "Populate cadence database"
+  mysql_db:
+    name: "{{ cadence_db_name }}"
+    state: import
+    target: "{{ item }}"
+  with_items:
+    - /usr/share/cadence/migrations/cadence-migrations/v0.1/base.sql
+  ignore_errors: true
+
+- name: "Populate visibility database"
+  mysql_db:
+    name: "{{ cadence_visibility_db_name }}"
+    state: import
+    target: "{{ item }}"
+  with_items:
+    - /usr/share/cadence/migrations/visibility-migrations/v0.1/base.sql
+  ignore_errors: true

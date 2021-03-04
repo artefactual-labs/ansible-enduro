@@ -1,0 +1,21 @@
+---
+- name: restart enduro
+  become: true
+  systemd:
+    daemon_reload: true
+    name: enduro
+    state: restarted
+
+- name: restart cadence
+  become: true
+  systemd:
+    daemon_reload: true
+    name: cadence
+    state: restarted
+
+- name: restart cadence-web
+  become: true
+  systemd:
+    daemon_reload: true
+    name: cadence-web
+    state: restarted

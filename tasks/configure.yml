@@ -1,0 +1,87 @@
+---
+- name: Copy the enduro systemd service file
+  template:
+    src: "{{ item }}"
+    dest: /etc/systemd/system/enduro.service
+    owner: root
+    group: root
+    mode: 0644
+  with_first_found:
+    - templates/{{ inventory_hostname }}/enduro.service.j2
+    - templates/enduro.service.j2
+  notify: restart enduro
+
+- name: Copy cadence systemd service file
+  template:
+    src: "{{ item }}"
+    dest: /etc/systemd/system/cadence.service
+    owner: root
+    group: root
+    mode: 0644
+  with_first_found:
+    - templates/{{ inventory_hostname }}/cadence.service.j2
+    - templates/cadence.service.j2
+  notify: restart cadence
+
+- name: Copy cadence-web systemd service file
+  template:
+    src: "{{ item }}"
+    dest: /etc/systemd/system/cadence-web.service
+    owner: root
+    group: root
+    mode: 0644
+  with_first_found:
+    - templates/{{ inventory_hostname }}/cadence-web.service.j2
+    - templates/cadence-web.service.j2
+  notify: restart cadence-web
+
+
+- name: Copy the enduro config file
+  template:
+    src: "{{ item }}"
+    dest: /etc/enduro.toml
+    owner: root
+    group: root
+    mode: 0644
+  with_first_found:
+    - templates/{{ inventory_hostname }}/enduro.toml.j2
+    - templates/enduro.toml.j2
+  notify: restart enduro
+
+- name: "Create cadence config dir"
+  file:
+    path: "/etc/cadence/config"
+    state: "directory"
+
+- name: Copy the cadence config file
+  template:
+    src: "{{ item }}"
+    dest: /etc/cadence/config/archivematica.yaml
+    owner: root
+    group: root
+    mode: 0644
+  with_first_found:
+    - templates/{{ inventory_hostname }}/cadence.yaml.j2
+    - templates/cadence.yaml.j2
+  notify: restart cadence
+
+- name: "Enable and start cadence and cadence-web"
+  systemd:
+    name: "{{ item }}"
+    state: "restarted"
+    enabled: "true"
+    daemon_reload: "yes"
+  with_items:
+    - "cadence"
+    - "cadence-web"
+
+- name: "Allow cadence to start"
+  command: "sleep 10s"
+- name: "Create enduroro domain"
+  command: cadence -ad localhost:7400 --domain=enduro domain register "enduro"
+  ignore_errors: true
+- name: "Set enduro retention"
+  command: cadence -ad localhost:7400 --domain=enduro domain update --retention 365
+  ignore_errors: true
+
+

@@ -1,0 +1,50 @@
+# This is the configuration file is managed by ansible"
+
+debug = true
+debugListen = "127.0.0.1:9001"
+
+[cadence]
+domain = "enduro"
+address = "127.0.0.1:7400"
+
+[api]
+listen = "127.0.0.1:9000"
+debug = false
+
+[database]
+dsn = "{{ enduro_db_user }}:{{ enduro_db_pass }}@tcp(127.0.0.1:3306)/{{ enduro_db_name }}"
+
+[[watcher.filesystem]]
+name = "watched-folder"
+path = "/home/"
+pipeline = "Archivematica"
+stripTopLevelDir = true
+retentionPeriod = "10s"
+ignore = "^*\\.mft$"
+
+[[pipeline]]
+name = "Archivematica"
+baseURL = "{{ archivematica_src_configure_am_site_url | default('http://localhost')}}"
+user = "{{ archivematica_src_configure_am_user|default('admin') }}"
+key = "{{ archivematica_src_configure_am_api_key | default('apikey') }}"
+transferDir = "/home/"
+processingDir = "/var/lib/enduro"
+processingConfig = "automated"
+storageServiceURL = "http://{{ archivematica_src_configure_ss_user|default('admin') }}:{{ archivematica_src_configure_ss_api_key | default('apikey') }}@localhost:8000"
+capacity = "{{ enduro_capacity | default('2') }}" 
+
+
+[[hooks."hari"]]
+mock = true
+disabled = true
+#baseURL = "" # E.g.: "https://192.168.1.50:8080/api"
+baseURL = "http://tr-pvl-hari-001/api"
+
+
+[[hooks."prod"]]
+receiptPath = "/staging/storage-receipts"
+disabled = true
+
+[validation]
+checksumsCheckEnabled = false
+

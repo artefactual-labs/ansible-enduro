@@ -1,0 +1,62 @@
+---
+- name: Assert usage of systemd as an init system
+  assert:
+    that: ansible_service_mgr == 'systemd'
+    msg: "This module only works with systemd"
+
+
+- name: Check if enduro is installed
+  stat:
+    path: "{{ enduro_binary_install_dir }}/enduro"
+  register: __enduro_is_installed
+  check_mode: false
+  tags:
+    - enduro_install
+
+## NO ENDURO VERSION FOR NOW
+# - name: Gather currently installed enduro version (if any)
+#   command: "{{ enduro_binary_install_dir }}/enduro --version"
+#   args:
+#     warn: false
+#   changed_when: false
+#   register: __enduro_current_version_output
+#   check_mode: false
+#   when: __enduro_is_installed.stat.exists
+#   tags:
+#     - enduro_install
+#     - skip_ansible_lint
+
+- block:
+    - name: Get latest release
+      uri:
+        url: "https://api.github.com/repos/artefactual-labs/enduro/releases/latest"
+        method: GET
+        return_content: true
+        status_code: 200
+        body_format: json
+        user: "{{ lookup('env', 'GH_USER') | default(omit) }}"
+        password: "{{ lookup('env', 'GH_TOKEN') | default(omit) }}"
+      no_log: "{{ not lookup('env', 'MOLECULE_DEBUG') | bool }}"
+      register: _latest_release
+      until: _latest_release.status == 200
+      retries: 5
+
+    - name: "Set enduro version to {{ _latest_release.json.tag_name[1:] }}"
+      set_fact:
+        enduro_version: "{{ _latest_release.json.tag_name[1:] }}"
+  when:
+    - enduro_version == "latest"
+    - enduro_binary_local_dir | length == 0
+  delegate_to: localhost
+  run_once: true
+
+- block:
+    - name: Get checksum list from github
+      set_fact:
+        _checksums: "{{ lookup('url', 'https://github.com/artefactual-labs/enduro/releases/download/v' + enduro_version + '/checksums.txt', wantlist=True) | list }}"
+
+    - name: "Get checksum for {{ go_arch }} architecture"
+      set_fact:
+        enduro_checksum: "{{ item.split(' ')[0] }}"
+      with_items: "{{ _checksums }}"
+  delegate_to: localhost
