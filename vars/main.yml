@@ -8,3 +8,51 @@ go_arch_map:
 
 go_arch: "{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}"
 
+enduro_mysql_databases:
+  - name: "{{ cadence_db_name }}"
+    collation: "utf8_general_ci"
+    encoding: "utf8"
+  - name: "{{ cadence_visibility_db_name }}"
+    collation: "utf8_general_ci"
+    encoding: "utf8"
+  - name: "{{ enduro_db_name }}"
+    collation: "utf8_general_ci"
+    encoding: "utf8"
+
+enduro_mysql_users:
+  - name: "{{ cadence_db_user }}"
+    pass: "{{ cadence_db_pass }}"
+    priv: "{{ cadence_db_name }}.*:ALL,GRANT"
+    host: "{{ cadence_db_host }}"
+  - name: "{{ cadence_visibility_db_user }}"
+    pass: "{{ cadence_visibility_db_pass }}"
+    priv: "{{ cadence_visibility_db_name }}.*:ALL,GRANT"
+    host: "{{ cadence_visibility_db_host }}"
+  - name: "{{ enduro_db_user }}"
+    pass: "{{ enduro_db_pass }}"
+    priv: "{{ enduro_db_name }}.*:ALL,GRANT"
+    host: "{{ enduro_db_host }}"
+
+enduro_nginx_sites:
+  enduro:
+    - listen 8090
+    - server_name _
+    - client_max_body_size 256M
+    - location / {
+        proxy_pass http://127.0.0.1:9000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      }
+  cadence-web:
+    - listen 8091
+    - server_name _
+    - client_max_body_size 256M
+    - location / {
+        proxy_pass http://127.0.0.1:8088;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      }

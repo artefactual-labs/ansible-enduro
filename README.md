@@ -27,19 +27,20 @@ Based on [cloudalchemy.memcached_exporter](https://github.com/cloudalchemy/ansib
 - Sample playbook, intended to be used against an already installed Archivematica instance:
 
 ```
-- hosts: all
+- hosts: "all"
   become: true
-  vars:
-    enduro_http_user: "enduro"
-    enduro_http_password: "artefactual"
   roles:
-    - artefactual.nginx
-    - artefactual.percona
-    - artefactual.enduro
+    - role: "artefactual.percona"
+      mysql_users: "{{ enduro_mysql_users }}"
+      mysql_databases: "{{ enduro_mysql_databases }}"
+    - role: "artefactual.nginx"
+      nginx_sites: "{{ enduro_nginx_sites }}"
+    - role: "artefactual.enduro"
 ```
 
 Enduro will be available at port 8090, with user "enduro" and password "artefactual".
 
+Cadence will be available at port 8091, with user "cadence" and password "artefactual"
 
 Default variables:
 ```
