@@ -35,7 +35,7 @@ enduro_mysql_users:
 
 enduro_nginx_sites:
   enduro:
-    - listen 8090
+    - listen {{ enduro_http_port }}
     - server_name _
     - client_max_body_size 256M
     - location / {
@@ -46,7 +46,7 @@ enduro_nginx_sites:
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
       }
   cadence-web:
-    - listen 8091
+    - listen {{ cadence_web_http_port }}
     - server_name _
     - client_max_body_size 256M
     - location / {

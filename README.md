@@ -39,7 +39,7 @@ Based on [cloudalchemy.memcached_exporter](https://github.com/cloudalchemy/ansib
     - role: "artefactual.enduro"
 ```
 
-Enduro will be available at port 8090 and cadence-web on port 8091
+Enduro will be available at port 8020 and cadence-web on port 8030
 
 
 Default variables:
