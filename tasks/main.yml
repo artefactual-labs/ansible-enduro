@@ -45,8 +45,10 @@
     daemon_reload: true
     name: "{{ item }}"
     enabled: true
+    state: "restarted"
   with_items:
     - enduro
     - cadence
+    - cadence-web
   tags:
     - enduro_run

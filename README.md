@@ -1,4 +1,4 @@
-# ansible-aipscan
+# ansible-enduro
 
 Ansible role for deploying [Enduro](https://github.com/artefactual-labs/enduro)
 
@@ -33,14 +33,14 @@ Based on [cloudalchemy.memcached_exporter](https://github.com/cloudalchemy/ansib
     - role: "artefactual.percona"
       mysql_users: "{{ enduro_mysql_users }}"
       mysql_databases: "{{ enduro_mysql_databases }}"
+      mysql_timezone_info: "true"
     - role: "artefactual.nginx"
       nginx_sites: "{{ enduro_nginx_sites }}"
     - role: "artefactual.enduro"
 ```
 
-Enduro will be available at port 8090, with user "enduro" and password "artefactual".
+Enduro will be available at port 8090 and cadence-web on port 8091
 
-Cadence will be available at port 8091, with user "cadence" and password "artefactual"
 
 Default variables:
 ```
