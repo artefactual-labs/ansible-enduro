@@ -30,7 +30,7 @@ key = "{{ archivematica_src_configure_am_api_key | default('apikey') }}"
 transferDir = "/home/"
 processingDir = "/var/lib/enduro"
 processingConfig = "automated"
-storageServiceURL = "http://{{ archivematica_src_configure_ss_user|default('admin') }}:{{ archivematica_src_configure_ss_api_key | default('apikey') }}@localhost:8000"
+storageServiceURL = "http://{{ archivematica_src_configure_ss_user|default('admin') }}:{{ archivematica_src_configure_ss_api_key | default('apikey') }}@{{ archivematica_src_configure_ss_url }}"
 capacity = "{{ enduro_capacity | default('2') }}" 
 
 
