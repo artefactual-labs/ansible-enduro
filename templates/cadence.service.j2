@@ -1,6 +1,10 @@
 [Unit]
 Description=Cadence
+{% if ansible_os_family == "Debian" %}
+After=mysql.service
+{% else %}
 After=mysqld.service
+{% endif %}
 
 [Service]
 Type=simple
