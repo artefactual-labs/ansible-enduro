@@ -1,3 +1,12 @@
+# To avoid Git src safedir error
+- name: "Create cadence-web dir or change ownership to root"
+  file:
+    path: "{{ cadence_web_path }}"
+    owner: "root"
+    group: "root"
+    state: directory
+    recurse: yes
+
 - name: "Download cadence-web code"
   git:
     repo: "https://github.com/uber/cadence-web"
@@ -5,7 +14,7 @@
     version: "{{ cadence_web_version }}"
     force: "yes"
 
-- name: "Change ownership"
+- name: "Change cadence-web dir ownership"
   file:
     path: "{{ cadence_web_path }}"
     owner: "{{ cadence_system_user }}"
