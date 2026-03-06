@@ -14,28 +14,6 @@ enduro_db_pass: "enduro%123"
 enduro_db_host: "localhost"
 enduro_db_name: "enduro"
 
-
-# Cadence-web
-cadence_web_path: "/usr/share/cadence-web"
-cadence_web_version: "3.4.1"
-cadence_web_http_port: 8030
-
-# Internal variables
-cadence_system_user: "cadence"
-cadence_system_group: "cadence"
-
-# Cadence database
-cadence_db_user: "cadence"
-cadence_db_pass: "cadence123P$"
-cadence_db_host: "localhost"
-cadence_db_name: "cadence"
-
-# Visibility database
-cadence_visibility_db_user: "visibility"
-cadence_visibility_db_pass: "visibility123P$"
-cadence_visibility_db_host: "localhost"
-cadence_visibility_db_name: "visibility"
-
 # nginx sites config sample for nginx role
 enduro_nginx_sites:
   enduro:
@@ -44,17 +22,6 @@ enduro_nginx_sites:
     - client_max_body_size 256M
     - location / {
         proxy_pass http://127.0.0.1:9000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Host $http_host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      }
-  cadence-web:
-    - listen {{ cadence_web_http_port }}
-    - server_name _
-    - client_max_body_size 256M
-    - location / {
-        proxy_pass http://127.0.0.1:8088;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Host $http_host;

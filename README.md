@@ -4,9 +4,8 @@ Ansible role for deploying [Enduro](https://github.com/artefactual-labs/enduro)
 
 Based on [cloudalchemy.memcached_exporter](https://github.com/cloudalchemy/ansible-memcached-exporter/)
 
-- Installs and configures [Cadence](https://github.com/uber/cadence) and [Cadence-web](https://github.com/uber/cadence-web)
 
-- It requires Artefactual's Nginx and Percona roles, based on the excelent work from [@geerlingguy](https://github.com/geerlingguy). Add this to your requirements.yml file:
+- It requires Artefactual's Nginx, Percona and Temporal roles, based on the excelent work from [@geerlingguy](https://github.com/geerlingguy). Add this to your requirements.yml file:
 
 
 ```
@@ -15,6 +14,10 @@ Based on [cloudalchemy.memcached_exporter](https://github.com/cloudalchemy/ansib
   name: artefactual.percona
   
 - src: "https://github.com/artefactual-labs/ansible-nginx"
+  branch: "master"
+  name: "artefactual.nginx"
+
+- src: "https://github.com/artefactual-labs/ansible-temporal"
   branch: "master"
   name: "artefactual.nginx"
 
@@ -39,7 +42,7 @@ Based on [cloudalchemy.memcached_exporter](https://github.com/cloudalchemy/ansib
     - role: "artefactual.enduro"
 ```
 
-Enduro will be available at port 8020 and cadence-web on port 8030
+Enduro will be available at port 8020
 
 
 Default variables:
@@ -55,25 +58,7 @@ enduro_db_pass: "enduro%123"
 enduro_db_host: "localhost"
 enduro_db_name: "enduro"
 
-# Cadence database
-cadence_db_user: "cadence"
-cadence_db_pass: "cadence123P$"
-cadence_db_host: "localhost"
-cadence_db_name: "cadence"
-
-# Visibility database
-cadence_visibility_db_user: "visibility"
-cadence_visibility_db_pass: "visibility123P$"
-cadence_visibility_db_host: "localhost"
-cadence_visibility_db_name: "visibility"
-
-cadence_web_path: "/usr/share/cadence-web"
-cadence_web_version: "3.4.1"
-
 # Internal variables
 enduro_system_user: "enduro"
 enduro_system_group: "enduro"
-cadence_system_user: "cadence"
-cadence_system_group: "cadence"
-
 ```

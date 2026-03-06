@@ -21,19 +21,6 @@
   tags:
     - enduro_install
 
-
-- import_tasks: install-cadence.yml
-  become: true
-  tags:
-    - cadence_install
-
-- import_tasks: install-cadence-web.yml
-  become: true
-  tags:
-    - cadence_web_install
-
-
-
 - import_tasks: configure.yml
   become: true
   tags:
@@ -48,7 +35,5 @@
     state: "restarted"
   with_items:
     - enduro
-    - cadence
-    - cadence-web
   tags:
     - enduro_run
